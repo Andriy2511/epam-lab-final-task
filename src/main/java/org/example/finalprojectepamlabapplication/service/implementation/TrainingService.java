@@ -22,13 +22,17 @@ public class TrainingService implements ITrainingService {
 
     @Override
     public Optional<Training> addTraining(Training training) {
-        log.info("Adding training: {}", training.getTrainingName());
+        training.setId(trainingDAO.findMaxId() + 1);
         return trainingDAO.addTraining(training);
     }
 
     @Override
     public Optional<Training> getTrainingById(Long id) {
         log.info("Searching training with id: {}", id);
-        return trainingDAO.findById(id);
+        Optional<Training> training = trainingDAO.findById(id);
+        if (training.isEmpty()){
+            log.warn("Training with id {} not found.", id);
+        }
+        return training;
     }
 }

@@ -9,25 +9,27 @@ import java.util.List;
 public class UsernameGenerator {
 
     public String generateUsername(User user, List<User> users) {
-        String username = user.getFirstName() + "." + user.getLastName();
-        int countOfSimilarNameAndSurname = countCoincidenceWithNameAndSurname(user, users);
-        if(countOfSimilarNameAndSurname == 0){
-            log.info("Generated username: {}", username);
+        if(user.getFirstName() != null && user.getLastName() != null) {
+            String username = user.getFirstName() + "." + user.getLastName();
+            int countOfSimilarNameAndSurname = countCoincidenceWithNameAndSurname(user, users);
+            if (countOfSimilarNameAndSurname != 0) {
+                username = username + countOfSimilarNameAndSurname;
+            }
             return username;
         } else {
-            username = username + countOfSimilarNameAndSurname;
-            log.info("Generated username with suffix: {}", username);
-            return username;
+            log.warn("Couldn't generate username. First name is {} and last name is {}", user.getFirstName(), user.getLastName());
+            return null;
         }
     }
 
-    private int countCoincidenceWithNameAndSurname(User user, List<User> users){
+    private int countCoincidenceWithNameAndSurname(User user, List<User> users) {
         int count = 0;
-        for(User u : users){
-            if(u.getFirstName().equals(user.getFirstName()) && u.getLastName().equals(user.getLastName())){
+        for (User u : users) {
+            if (u.getFirstName().equals(user.getFirstName()) && u.getLastName().equals(user.getLastName())) {
                 count++;
             }
         }
         return count;
     }
+
 }

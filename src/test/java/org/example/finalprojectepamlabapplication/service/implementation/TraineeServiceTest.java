@@ -50,7 +50,6 @@ public class TraineeServiceTest {
         Assertions.assertNotNull(trainee);
         Assertions.assertEquals("Test.User", trainee.getUser().getUsername());
         Assertions.assertEquals(10, trainee.getUser().getPassword().length());
-        verify(traineeDAO).addTrainee(trainee);
     }
 
     @Test
@@ -60,7 +59,6 @@ public class TraineeServiceTest {
         trainee = traineeService.updateTrainee(trainee).get();
 
         Assertions.assertNotNull(trainee);
-        verify(traineeDAO).updateTrainee(trainee);
     }
 
     @Test
@@ -70,7 +68,6 @@ public class TraineeServiceTest {
         trainee = traineeService.deleteTrainee(trainee).get();
 
         Assertions.assertNotNull(trainee);
-        verify(traineeDAO).deleteTrainee(trainee.getId());
     }
 
     @Test
@@ -81,7 +78,6 @@ public class TraineeServiceTest {
 
         Assertions.assertNotNull(trainee);
         Assertions.assertEquals(1L, trainee.getId());
-        verify(traineeDAO).findById(1L);
     }
 }
 

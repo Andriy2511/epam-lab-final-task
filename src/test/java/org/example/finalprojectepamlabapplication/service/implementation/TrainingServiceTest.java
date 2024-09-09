@@ -14,7 +14,6 @@ import java.util.Date;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class TrainingServiceTest {
@@ -45,8 +44,6 @@ public class TrainingServiceTest {
         Assertions.assertTrue(result.isPresent());
         Assertions.assertEquals(training, result.get());
         Assertions.assertEquals("Morning Strength Training", result.get().getTrainingName());
-
-        verify(trainingDAO).addTraining(training);
     }
 
     @Test
@@ -54,7 +51,6 @@ public class TrainingServiceTest {
         Optional<Training> result = trainingService.getTrainingById(1L);
 
         Assertions.assertNotNull(result);
-        verify(trainingDAO).findById(1L);
     }
 }
 

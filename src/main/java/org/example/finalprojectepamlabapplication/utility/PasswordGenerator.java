@@ -2,22 +2,23 @@ package org.example.finalprojectepamlabapplication.utility;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Random;
+import java.security.SecureRandom;
 
 @Slf4j
 public class PasswordGenerator {
     private static final int PASSWORD_LENGTH = 10;
 
     public static String generatePassword() {
-        Random random = new Random();
+        SecureRandom secureRandom = new SecureRandom();
         StringBuilder password = new StringBuilder();
 
-        for (int i = 0; i < PASSWORD_LENGTH; i++) {
-            char randomChar = (char) (33 + random.nextInt(94));
-            password.append(randomChar);
+        int[] randomNumbers = secureRandom.ints(PASSWORD_LENGTH, 33, 127).toArray();
+
+        for (int randomNumber : randomNumbers) {
+            password.append((char) randomNumber);
         }
 
-        log.info("The password has been created");
         return password.toString();
     }
+
 }

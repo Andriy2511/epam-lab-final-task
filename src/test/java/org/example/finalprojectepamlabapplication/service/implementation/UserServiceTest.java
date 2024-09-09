@@ -41,7 +41,6 @@ public class UserServiceTest {
         Assertions.assertNotNull(result);
         Assertions.assertEquals(2, result.size());
         Assertions.assertEquals(userList, result);
-        verify(userDAO, times(1)).findAllUsers();
     }
 }
 

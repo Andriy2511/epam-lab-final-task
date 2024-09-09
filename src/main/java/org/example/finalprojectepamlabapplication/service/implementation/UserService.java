@@ -12,6 +12,7 @@ import java.util.List;
 @Service
 @Slf4j
 public class UserService implements IUserService {
+
     private final IUserDAO userDAO;
 
     @Autowired
@@ -21,7 +22,8 @@ public class UserService implements IUserService {
 
     @Override
     public List<User> getAllUsers() {
-        log.info("Searching all users");
-        return userDAO.findAllUsers();
+        List<User> users = userDAO.findAllUsers();
+        log.info("Searching all users. Total users: {}", users.size());
+        return users;
     }
 }

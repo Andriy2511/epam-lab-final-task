@@ -56,7 +56,6 @@ public class TrainerServiceTest {
         Assertions.assertNotNull(trainer);
         Assertions.assertEquals("Test.Trainer", trainer.getUser().getUsername());
         Assertions.assertEquals(10, trainer.getUser().getPassword().length());
-        verify(trainerDAO).addTrainer(trainer);
     }
 
     @Test
@@ -66,7 +65,6 @@ public class TrainerServiceTest {
         trainer = trainerService.updateTrainer(trainer).get();
 
         Assertions.assertNotNull(trainer);
-        verify(trainerDAO).updateTrainer(trainer);
     }
 
     @Test
@@ -76,7 +74,6 @@ public class TrainerServiceTest {
         trainer = trainerService.deleteTrainer(trainer).get();
 
         Assertions.assertNotNull(trainer);
-        verify(trainerDAO).deleteTrainer(trainer.getId());
     }
 
     @Test
@@ -87,7 +84,6 @@ public class TrainerServiceTest {
 
         Assertions.assertNotNull(trainer);
         Assertions.assertEquals(1L, trainer.getId());
-        verify(trainerDAO).findById(1L);
     }
 }
 

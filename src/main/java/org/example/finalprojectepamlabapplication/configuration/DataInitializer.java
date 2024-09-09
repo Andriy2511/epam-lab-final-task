@@ -8,6 +8,8 @@ import org.example.finalprojectepamlabapplication.model.Trainer;
 import org.example.finalprojectepamlabapplication.model.Training;
 import org.example.finalprojectepamlabapplication.utility.DataWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +34,7 @@ public class DataInitializer {
         this.trainingsStorage = trainingsStorage;
     }
 
-    @PostConstruct
+    @EventListener(ApplicationReadyEvent.class)
     public void initData() {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -45,10 +47,6 @@ public class DataInitializer {
 
         } catch (IOException e) {
             log.error("Error while reading data: ", e);
-            e.printStackTrace();
         }
     }
 }
-
-
-

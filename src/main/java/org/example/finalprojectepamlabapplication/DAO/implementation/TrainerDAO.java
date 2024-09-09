@@ -22,29 +22,40 @@ public class TrainerDAO implements ITrainerDAO {
     @Override
     public Optional<Trainer> addTrainer(Trainer trainer) {
         trainerMap.put(trainer.getId(), trainer);
-        log.info("Trainer with id {} has been added", trainer.getId());
         return Optional.of(trainer);
     }
 
     @Override
     public Optional<Trainer> updateTrainer(Trainer trainer) {
-        log.info("Trainer with id {} has been changed", trainer.getId());
         return Optional.ofNullable(trainerMap.replace(trainer.getId(), trainer));
     }
 
     @Override
     public Optional<Trainer> findById(Long id) {
         Optional<Trainer> searchedTrainer = Optional.ofNullable(trainerMap.get(id));
-        if (searchedTrainer.isEmpty())
-            log.warn("Searched Trainee with id {} not found.", id);
+        if (searchedTrainer.isEmpty()) {
+            log.warn("Searched Trainer with id {} not found.", id);
+        }
         return searchedTrainer;
     }
 
     @Override
     public Optional<Trainer> deleteTrainer(Long id) {
         Optional<Trainer> removedTrainer = Optional.ofNullable(trainerMap.remove(id));
-        if (removedTrainer.isEmpty())
-            log.warn("Failed to delete Trainer with ID {}. Trainer not found.", id);
+        if (removedTrainer.isEmpty()) {
+            log.warn("Failed to delete Trainer with id {}. Trainee not found.", id);
+        }
         return removedTrainer;
+    }
+
+    @Override
+    public Long findMaxId() {
+        Long maxId = 0L;
+        for (Long id : trainerMap.keySet()) {
+            if (id > maxId)
+                maxId = id;
+        }
+        log.info("Max id is {}", maxId);
+        return maxId;
     }
 }

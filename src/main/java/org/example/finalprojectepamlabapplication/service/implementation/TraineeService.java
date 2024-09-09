@@ -30,29 +30,31 @@ public class TraineeService implements ITraineeService {
 
     @Override
     public Optional<Trainee> addTrainee(Trainee trainee) {
+        trainee.setId(traineeDAO.findMaxId() + 1);
         User user = trainee.getUser();
         user.setUsername(usernameGenerator.generateUsername(user, userService.getAllUsers()));
         user.setPassword(PasswordGenerator.generatePassword());
         trainee.setUser(user);
-        log.info("Adding Trainee with id: {}", trainee.getId());
         return traineeDAO.addTrainee(trainee);
     }
 
     @Override
     public Optional<Trainee> updateTrainee(Trainee trainee) {
-        log.info("Updating Trainee with id: {}", trainee.getId());
         return traineeDAO.updateTrainee(trainee);
     }
 
     @Override
     public Optional<Trainee> deleteTrainee(Trainee trainee) {
-        log.info("Deleting Trainee with id {}", trainee.getId());
         return traineeDAO.deleteTrainee(trainee.getId());
     }
 
     @Override
     public Optional<Trainee> getTraineeById(Long id) {
         log.info("Searching Trainee with id {}", id);
-        return traineeDAO.findById(id);
+        Optional<Trainee> trainee = traineeDAO.findById(id);
+        if (trainee.isEmpty()){
+            log.warn("Trainee with id {} not found.", id);
+        }
+        return trainee;
     }
 }

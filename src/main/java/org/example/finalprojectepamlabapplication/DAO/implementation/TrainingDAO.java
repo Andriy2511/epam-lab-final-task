@@ -22,13 +22,26 @@ public class TrainingDAO implements ITrainingDAO {
 
     @Override
     public Optional<Training> addTraining(Training training) {
-        trainingMap.put(training.getTraineeId(), training);
-        log.info("Training for trainee with id {} has been added", training.getTraineeId());
+        trainingMap.put(training.getId(), training);
         return Optional.of(training);
     }
 
     @Override
     public Optional<Training> findById(Long id) {
-        return Optional.ofNullable(trainingMap.get(id));
+        Optional<Training> searchedTraining = Optional.ofNullable(trainingMap.get(id));
+        if (searchedTraining.isEmpty()) {
+            log.warn("Searched searchedTraining with id {} not found.", id);
+        }
+        return searchedTraining;
+    }
+
+    @Override
+    public Long findMaxId() {
+        Long maxId = 0L;
+        for (Long id : trainingMap.keySet()) {
+            if (id > maxId)
+                maxId = id;
+        }
+        return maxId;
     }
 }

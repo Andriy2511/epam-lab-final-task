@@ -30,29 +30,32 @@ public class TrainerService implements ITrainerService {
 
     @Override
     public Optional<Trainer> addTrainer(Trainer trainer) {
+        trainer.setId(trainerDAO.findMaxId() + 1);
         User user = trainer.getUser();
         user.setUsername(usernameGenerator.generateUsername(user, userService.getAllUsers()));
         user.setPassword(PasswordGenerator.generatePassword());
         trainer.setUser(user);
-        log.info("Adding Trainer with id: {}", trainer.getId());
         return trainerDAO.addTrainer(trainer);
     }
 
     @Override
     public Optional<Trainer> updateTrainer(Trainer trainer) {
-        log.info("Updating Trainer with id: {}", trainer.getId());
         return trainerDAO.updateTrainer(trainer);
     }
 
     @Override
     public Optional<Trainer> deleteTrainer(Trainer trainer) {
-        log.info("Deleting Trainer with id {}", trainer.getId());
         return trainerDAO.deleteTrainer(trainer.getId());
     }
 
     @Override
     public Optional<Trainer> getTrainerById(Long id) {
         log.info("Searching Trainer with id {}", id);
-        return trainerDAO.findById(id);
+        Optional<Trainer> trainer = trainerDAO.findById(id);
+        if (trainer.isEmpty()){
+            log.warn("Trainer with id {} not found.", id);
+        }
+
+        return trainer;
     }
 }
