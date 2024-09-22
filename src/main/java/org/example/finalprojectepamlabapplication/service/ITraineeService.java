@@ -1,17 +1,21 @@
 package org.example.finalprojectepamlabapplication.service;
 
+import org.example.finalprojectepamlabapplication.DTO.modelDTO.TraineeDTO;
+import org.example.finalprojectepamlabapplication.DTO.modelDTO.TrainerDTO;
 import org.example.finalprojectepamlabapplication.model.Trainee;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ITraineeService {
 
-    Optional<Trainee> addTrainee(Trainee trainee);
+    TraineeDTO addTrainee(TraineeDTO traineeDTO);
 
-    Optional<Trainee> updateTrainee(Trainee trainee);
+    TraineeDTO updateTrainee(TraineeDTO traineeDTO);
 
-    Optional<Trainee> deleteTrainee(Trainee trainee);
+    TraineeDTO deleteTrainee(Long id);
 
-    Optional<Trainee> getTraineeById(Long id);
+    TraineeDTO getTraineeById(Long id);
 
+    TraineeDTO updateTrainersListByTraineeId(List<TrainerDTO> trainerDTOList, Long traineeId);
 }
