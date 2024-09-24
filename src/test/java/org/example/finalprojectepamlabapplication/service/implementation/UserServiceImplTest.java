@@ -1,13 +1,8 @@
 package org.example.finalprojectepamlabapplication.service.implementation;
 
-import org.example.finalprojectepamlabapplication.DTO.modelDTO.TraineeDTO;
-import org.example.finalprojectepamlabapplication.DTO.modelDTO.TrainerDTO;
 import org.example.finalprojectepamlabapplication.DTO.modelDTO.UserDTO;
-import org.example.finalprojectepamlabapplication.model.Trainee;
-import org.example.finalprojectepamlabapplication.model.Trainer;
 import org.example.finalprojectepamlabapplication.model.User;
 import org.example.finalprojectepamlabapplication.repository.UserRepository;
-import org.example.finalprojectepamlabapplication.utility.UsernameGenerator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,13 +12,13 @@ import java.util.Optional;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-public class UserServiceTest {
+public class UserServiceImplTest {
 
     @Mock
     private UserRepository userRepository;
 
     @InjectMocks
-    private UserService userService;
+    private UserServiceImpl userService;
 
     private User user;
     private UserDTO userDTO;
@@ -32,22 +27,8 @@ public class UserServiceTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        user = new User();
-        user.setId(1L);
-        user.setFirstName("Jane");
-        user.setLastName("Smith");
-        user.setUsername("jane.smith");
-        user.setPassword("password123");
-        user.setActive(true);
-
-        userDTO = UserDTO.builder()
-                .id(1L)
-                .firstName("Jane")
-                .lastName("Smith")
-                .username("jane.smith")
-                .password("password123")
-                .isActive(true)
-                .build();
+        user = createUser();
+        userDTO = createUserDTO();
     }
 
     @Test
@@ -114,5 +95,27 @@ public class UserServiceTest {
 
         Assertions.assertNotNull(result);
         Assertions.assertFalse(result.isActive());
+    }
+
+    private User createUser() {
+        User user = new User();
+        user.setId(1L);
+        user.setFirstName("Jane");
+        user.setLastName("Smith");
+        user.setUsername("jane.smith");
+        user.setPassword("password123");
+        user.setActive(true);
+        return user;
+    }
+
+    private UserDTO createUserDTO() {
+        return UserDTO.builder()
+                .id(1L)
+                .firstName("Jane")
+                .lastName("Smith")
+                .username("jane.smith")
+                .password("password123")
+                .isActive(true)
+                .build();
     }
 }

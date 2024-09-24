@@ -7,7 +7,6 @@ import org.example.finalprojectepamlabapplication.model.Trainer;
 import org.example.finalprojectepamlabapplication.model.TrainingType;
 import org.example.finalprojectepamlabapplication.model.User;
 import org.example.finalprojectepamlabapplication.repository.TrainerRepository;
-import org.example.finalprojectepamlabapplication.service.IUserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,16 +16,16 @@ import java.util.Optional;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-public class TrainerServiceTest {
+public class TrainerServiceImplTest {
 
     @Mock
     private TrainerRepository trainerRepository;
 
     @Mock
-    private IUserService userService;
+    private UserServiceImpl userService;
 
     @InjectMocks
-    private TrainerService trainerService;
+    private TrainerServiceImpl trainerService;
 
     private Trainer trainer;
     private TrainerDTO trainerDTO;
@@ -37,40 +36,10 @@ public class TrainerServiceTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        User user = new User();
-        user.setId(1L);
-        user.setFirstName("first");
-        user.setLastName("user");
-        user.setUsername("first.user");
-        user.setPassword("password123");
-
-        userDTO = UserDTO.builder()
-                .id(1L)
-                .firstName("second")
-                .lastName("user")
-                .username("second.user")
-                .password("password123")
-                .build();
-
-        TrainingType trainingType = new TrainingType();
-        trainingType.setId(1L);
-        trainingType.setTrainingTypeName("Yoga");
-
-        trainingTypeDTO = TrainingTypeDTO.builder()
-                .id(1L)
-                .trainingTypeName("Yoga")
-                .build();
-
-        trainer = new Trainer();
-        trainer.setId(1L);
-        trainer.setUser(user);
-        trainer.setTrainingType(trainingType);
-
-        trainerDTO = TrainerDTO.builder()
-                .id(1L)
-                .userDTO(userDTO)
-                .trainingTypeDTO(trainingTypeDTO)
-                .build();
+        userDTO = createUserDTO();
+        trainingTypeDTO = createTrainingTypeDTO();
+        trainer = createTrainer();
+        trainerDTO = createTrainerDTO();
     }
 
     @Test
@@ -127,5 +96,55 @@ public class TrainerServiceTest {
         Assertions.assertNotNull(result);
         Assertions.assertFalse(result.isEmpty());
         Assertions.assertEquals(trainerDTO.getId(), result.get(0).getId());
+    }
+
+    private UserDTO createUserDTO() {
+        return UserDTO.builder()
+                .id(1L)
+                .firstName("second")
+                .lastName("user")
+                .username("second.user")
+                .password("password123")
+                .build();
+    }
+
+    private TrainingTypeDTO createTrainingTypeDTO() {
+        return TrainingTypeDTO.builder()
+                .id(1L)
+                .trainingTypeName("Yoga")
+                .build();
+    }
+
+    private User createUser() {
+        User user = new User();
+        user.setId(1L);
+        user.setFirstName("first");
+        user.setLastName("user");
+        user.setUsername("first.user");
+        user.setPassword("password123");
+        return user;
+    }
+
+    private TrainingType createTrainingType() {
+        TrainingType trainingType = new TrainingType();
+        trainingType.setId(1L);
+        trainingType.setTrainingTypeName("Yoga");
+        return trainingType;
+    }
+
+    private Trainer createTrainer() {
+        Trainer trainer = new Trainer();
+        trainer.setId(1L);
+        trainer.setUser(createUser());
+        trainer.setTrainingType(createTrainingType());
+        return trainer;
+    }
+
+    private TrainerDTO createTrainerDTO() {
+        return TrainerDTO.builder()
+                .id(1L)
+                .userDTO(userDTO)
+                .trainingTypeDTO(trainingTypeDTO)
+                .build();
     }
 }

@@ -1,12 +1,10 @@
 package org.example.finalprojectepamlabapplication.service;
 
 import org.example.finalprojectepamlabapplication.DTO.modelDTO.TrainerDTO;
-import org.example.finalprojectepamlabapplication.model.Trainer;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface ITrainerService {
+public interface TrainerService {
 
     TrainerDTO addTrainer(TrainerDTO trainerDTO);
 

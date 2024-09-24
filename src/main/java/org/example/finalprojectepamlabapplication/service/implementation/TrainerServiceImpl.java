@@ -7,38 +7,31 @@ import org.example.finalprojectepamlabapplication.DTO.modelDTO.UserDTO;
 import org.example.finalprojectepamlabapplication.repository.TrainerRepository;
 import org.example.finalprojectepamlabapplication.model.Trainer;
 import org.example.finalprojectepamlabapplication.model.User;
-import org.example.finalprojectepamlabapplication.service.ITrainerService;
-import org.example.finalprojectepamlabapplication.service.IUserService;
-import org.example.finalprojectepamlabapplication.utility.PasswordGenerator;
-import org.example.finalprojectepamlabapplication.utility.UsernameGenerator;
+import org.example.finalprojectepamlabapplication.service.TrainerService;
+import org.example.finalprojectepamlabapplication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @Slf4j
-public class TrainerService implements ITrainerService {
+public class TrainerServiceImpl implements TrainerService {
 
     private final TrainerRepository trainerRepository;
-    private final IUserService userService;
-    private final UsernameGenerator usernameGenerator;
+    private final UserService userService;
 
     @Autowired
-    public TrainerService(TrainerRepository trainerRepository, IUserService userService) {
+    public TrainerServiceImpl(TrainerRepository trainerRepository, UserService userService) {
         this.trainerRepository = trainerRepository;
         this.userService = userService;
-        usernameGenerator = new UsernameGenerator();
     }
 
     @Override
     public TrainerDTO addTrainer(TrainerDTO trainerDTO) {
         Trainer trainer = TrainerDTO.toEntity(trainerDTO);
-        User user = trainer.getUser();
-        user.setUsername(usernameGenerator.generateUsername(user, userService.getAllUsers()));
-        user.setPassword(PasswordGenerator.generatePassword());
+        User user = userService.setUsernameAndPasswordForUser(trainer.getUser());
         trainer.setUser(user);
         return TrainerDTO.toDTO(trainerRepository.save(trainer));
     }
@@ -57,7 +50,6 @@ public class TrainerService implements ITrainerService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public TrainerDTO getTrainerById(Long id) {
         log.info("Searching Trainer with id {}", id);
         Optional<Trainer> trainer = trainerRepository.findById(id);
@@ -69,7 +61,6 @@ public class TrainerService implements ITrainerService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<TrainerDTO> getTrainersNotAssignedToTrainee(String traineeUsername) {
         List<Trainer> trainers = trainerRepository.findTrainersWhichNotAssignToTraineeByUsername(traineeUsername);
         return trainers.stream().map(TrainerDTO::toDTO).toList();

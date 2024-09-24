@@ -8,41 +8,33 @@ import org.example.finalprojectepamlabapplication.model.Trainer;
 import org.example.finalprojectepamlabapplication.repository.TraineeRepository;
 import org.example.finalprojectepamlabapplication.model.Trainee;
 import org.example.finalprojectepamlabapplication.model.User;
-import org.example.finalprojectepamlabapplication.service.ITraineeService;
-import org.example.finalprojectepamlabapplication.service.IUserService;
-import org.example.finalprojectepamlabapplication.utility.PasswordGenerator;
-import org.example.finalprojectepamlabapplication.utility.UsernameGenerator;
+import org.example.finalprojectepamlabapplication.service.TraineeService;
+import org.example.finalprojectepamlabapplication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @Slf4j
-public class TraineeService implements ITraineeService {
+public class TraineeServiceImpl implements TraineeService {
 
     private final TraineeRepository traineeRepository;
-    private final IUserService userService;
-    private final UsernameGenerator usernameGenerator;
+    private final UserService userService;
 
     @Autowired
-    public TraineeService(TraineeRepository traineeRepository, IUserService userService) {
+    public TraineeServiceImpl(TraineeRepository traineeRepository, UserService userService) {
         this.traineeRepository = traineeRepository;
         this.userService = userService;
-        usernameGenerator = new UsernameGenerator();
     }
 
     @Override
     public TraineeDTO addTrainee(TraineeDTO traineeDTO) {
         Trainee trainee = TraineeDTO.toEntity(traineeDTO);
-        User user = trainee.getUser();
-        user.setUsername(usernameGenerator.generateUsername(user, userService.getAllUsers()));
-        user.setPassword(PasswordGenerator.generatePassword());
+        User user = userService.setUsernameAndPasswordForUser(trainee.getUser());
         trainee.setUser(user);
-        traineeRepository.save(trainee);
-        return TraineeDTO.toDTO(trainee);
+        return TraineeDTO.toDTO(traineeRepository.save(trainee));
     }
 
     @Override
@@ -61,7 +53,6 @@ public class TraineeService implements ITraineeService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public TraineeDTO getTraineeById(Long id) {
         log.info("Searching Trainee with id {}", id);
         Optional<Trainee> trainee = traineeRepository.findById(id);

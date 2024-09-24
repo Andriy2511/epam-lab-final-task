@@ -5,7 +5,7 @@ import org.example.finalprojectepamlabapplication.model.User;
 
 import java.util.List;
 
-public interface IUserService {
+public interface UserService {
 
     List<User> getAllUsers();
 
@@ -18,4 +18,6 @@ public interface IUserService {
     UserDTO updateUserPassword(UserDTO userDTO, String password);
 
     UserDTO changeActiveStatus(Long id);
+
+    User setUsernameAndPasswordForUser(User user);
 }

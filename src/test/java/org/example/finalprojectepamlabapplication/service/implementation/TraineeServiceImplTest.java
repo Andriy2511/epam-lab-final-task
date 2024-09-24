@@ -7,7 +7,6 @@ import org.example.finalprojectepamlabapplication.DTO.modelDTO.UserDTO;
 import org.example.finalprojectepamlabapplication.model.Trainee;
 import org.example.finalprojectepamlabapplication.model.User;
 import org.example.finalprojectepamlabapplication.repository.TraineeRepository;
-import org.example.finalprojectepamlabapplication.service.IUserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,16 +24,16 @@ import java.time.ZoneId;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class TraineeServiceTest {
+public class TraineeServiceImplTest {
 
     @Mock
     private TraineeRepository traineeRepository;
 
     @Mock
-    private IUserService userService;
+    private UserServiceImpl userService;
 
     @InjectMocks
-    private TraineeService traineeService;
+    private TraineeServiceImpl traineeService;
 
     private Trainee trainee;
     private TraineeDTO traineeDTO;
@@ -45,43 +44,10 @@ public class TraineeServiceTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        trainee = new Trainee();
-
-        trainee.setDateOfBirth(new Date());
-        trainee.setAddress("Address");
-
-        User user = new User();
-
-        user.setFirstName("first");
-        user.setLastName("user");
-        user.setPassword("password123");
-        trainee.setUser(user);
-
-        UserDTO userDTO = UserDTO.builder()
-                .id(2L)
-                .firstName("second")
-                .lastName("user")
-                .username("second.user")
-                .password("1234567891")
-                .build();
-
-        trainingTypeDTO = TrainingTypeDTO.builder()
-                .id(1L)
-                .trainingTypeName("Strength Training")
-                .build();
-
-        trainers = List.of(TrainerDTO.builder()
-                .id(1L)
-                .trainingTypeDTO(trainingTypeDTO)
-                .userDTO(userDTO)
-                .build());
-
-        traineeDTO = TraineeDTO.builder()
-                .id(1L)
-                .dateOfBirth(new Date())
-                .address("Address")
-                .userDTO(UserDTO.toDTO(user))
-                .build();
+        trainee = createTrainee();
+        traineeDTO = createTraineeDTO();
+        trainingTypeDTO = createTrainingTypeDTO();
+        trainers = createTrainerDTOList();
     }
 
     @Test
@@ -144,6 +110,67 @@ public class TraineeServiceTest {
 
         Assertions.assertNotNull(result);
     }
+
+    private Trainee createTrainee() {
+        Trainee trainee = new Trainee();
+        trainee.setId(1L);
+        trainee.setDateOfBirth(new Date());
+        trainee.setAddress("Address");
+        trainee.setUser(createUser());
+        return trainee;
+    }
+
+    private User createUser() {
+        User user = new User();
+        user.setId(1L);
+        user.setFirstName("first");
+        user.setLastName("user");
+        user.setUsername("first.user");
+        user.setPassword("password123");
+        return user;
+    }
+
+    private UserDTO createUserDTO() {
+        return UserDTO.builder()
+                .id(1L)
+                .firstName("first")
+                .lastName("user")
+                .username("first.user")
+                .password("password123")
+                .build();
+    }
+
+    private TraineeDTO createTraineeDTO() {
+        return TraineeDTO.builder()
+                .id(1L)
+                .dateOfBirth(new Date())
+                .address("Address")
+                .userDTO(createUserDTO())
+                .build();
+    }
+
+    private TrainingTypeDTO createTrainingTypeDTO() {
+        return TrainingTypeDTO.builder()
+                .id(1L)
+                .trainingTypeName("Strength Training")
+                .build();
+    }
+
+    private List<TrainerDTO> createTrainerDTOList() {
+        UserDTO trainerUserDTO = UserDTO.builder()
+                .id(2L)
+                .firstName("second")
+                .lastName("user")
+                .username("second.user")
+                .password("1234567891")
+                .build();
+
+        TrainerDTO trainerDTO = TrainerDTO.builder()
+                .id(1L)
+                .trainingTypeDTO(trainingTypeDTO)
+                .userDTO(trainerUserDTO)
+                .build();
+
+        return List.of(trainerDTO);
+    }
 }
-
-

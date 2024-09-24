@@ -11,13 +11,13 @@ import java.util.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-public class TrainingServiceTest {
+public class TrainingServiceImplTest {
 
     @Mock
     private TrainingRepository trainingRepository;
 
     @InjectMocks
-    private TrainingService trainingService;
+    private TrainingServiceImpl trainingService;
 
     private TrainingDTO trainingDTO;
     private TraineeDTO traineeDTO;
@@ -28,47 +28,11 @@ public class TrainingServiceTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        UserDTO traineeUserDTO = UserDTO.builder()
-                .id(1L)
-                .firstName("TraineeFirst")
-                .lastName("TraineeLast")
-                .username("trainee.username")
-                .build();
+        traineeDTO = createTraineeDTO();
+        trainingTypeDTO = createTrainingTypeDTO();
+        trainerDTO = createTrainerDTO();
+        trainingDTO = createTrainingDTO();
 
-        traineeDTO = TraineeDTO.builder()
-                .id(1L)
-                .userDTO(traineeUserDTO)
-                .dateOfBirth(new Date())
-                .address("123 Trainee Street")
-                .build();
-
-        UserDTO trainerUserDTO = UserDTO.builder()
-                .id(2L)
-                .firstName("TrainerFirst")
-                .lastName("TrainerLast")
-                .username("trainer.username")
-                .build();
-
-        trainingTypeDTO = TrainingTypeDTO.builder()
-                .id(1L)
-                .trainingTypeName("Yoga")
-                .build();
-
-        trainerDTO = TrainerDTO.builder()
-                .id(1L)
-                .userDTO(trainerUserDTO)
-                .trainingTypeDTO(trainingTypeDTO)
-                .build();
-
-        trainingDTO = TrainingDTO.builder()
-                .id(1L)
-                .trainee(traineeDTO)
-                .trainer(trainerDTO)
-                .trainingName("Morning Yoga")
-                .trainingTypeDTO(trainingTypeDTO)
-                .trainingDate(new Date())
-                .trainingDuration(60)
-                .build();
     }
 
 
@@ -107,12 +71,13 @@ public class TrainingServiceTest {
     }
 
     @Test
-    public void testGetTrainingsByTraineeUsernameAndToDate() {
+    public void testGetTrainingsByTraineeAndToDate() {
         Training training = TrainingDTO.toEntity(trainingDTO);
-        when(trainingRepository.findTrainingsByTraineeUsernameAndToDate(anyString(), any(Date.class)))
+        when(trainingRepository.findTrainingsByTraineeAndCriteria(eq(1L), any(Date.class), isNull(), isNull(), isNull()))
                 .thenReturn(List.of(training));
 
-        List<TrainingDTO> result = trainingService.getTrainingsByTraineeUsernameAndToDate("trainee.username", new Date());
+        List<TrainingDTO> result = trainingService
+                .getTrainingsByTraineeAndCriteria(1L, new Date(), null, null, null);
 
         Assertions.assertNotNull(result);
         Assertions.assertFalse(result.isEmpty());
@@ -121,12 +86,13 @@ public class TrainingServiceTest {
     }
 
     @Test
-    public void testGetTrainingsByTraineeUsernameAndFromDate() {
+    public void testGetTrainingsByTraineeAndFromDate() {
         Training training = TrainingDTO.toEntity(trainingDTO);
-        when(trainingRepository.findTrainingsByTraineeUsernameAndFromDate(anyString(), any(Date.class)))
+        when(trainingRepository.findTrainingsByTraineeAndCriteria(eq(1L), isNull(), any(Date.class), isNull(), isNull()))
                 .thenReturn(List.of(training));
 
-        List<TrainingDTO> result = trainingService.getTrainingsByTraineeUsernameAndFromDate("trainee.username", new Date());
+        List<TrainingDTO> result = trainingService
+                .getTrainingsByTraineeAndCriteria(1L, null, new Date(), null, null);
 
         Assertions.assertNotNull(result);
         Assertions.assertFalse(result.isEmpty());
@@ -135,13 +101,14 @@ public class TrainingServiceTest {
     }
 
     @Test
-    public void testGetTrainingsByTraineeUsernameAndTrainingType() {
+    public void testGetTrainingsByTraineeAndTrainingType() {
         Training training = TrainingDTO.toEntity(trainingDTO);
         TrainingType trainingType = TrainingTypeDTO.toEntity(trainingTypeDTO);
-        when(trainingRepository.findTrainingsByTraineeUsernameAndTrainingType(anyString(), any(TrainingType.class)))
+        when(trainingRepository.findTrainingsByTraineeAndCriteria(eq(1L), isNull(), isNull(), eq(trainingType), isNull()))
                 .thenReturn(List.of(training));
 
-        List<TrainingDTO> result = trainingService.getTrainingsByTraineeUsernameAndTrainingType("trainee.username", trainingType);
+        List<TrainingDTO> result = trainingService
+                .getTrainingsByTraineeAndCriteria(1L, null, null, trainingType, null);
 
         Assertions.assertNotNull(result);
         Assertions.assertFalse(result.isEmpty());
@@ -150,12 +117,13 @@ public class TrainingServiceTest {
     }
 
     @Test
-    public void testGetTrainingsByTraineeUsernameAndTrainerUsername() {
+    public void testGetTrainingsByTraineeAndTrainerUsername() {
         Training training = TrainingDTO.toEntity(trainingDTO);
-        when(trainingRepository.findTrainingsByTraineeUsernameAndTrainerUsername(anyString(), anyString()))
+        when(trainingRepository.findTrainingsByTraineeAndCriteria(eq(1L), isNull(), isNull(), isNull(), eq("trainer.username")))
                 .thenReturn(List.of(training));
 
-        List<TrainingDTO> result = trainingService.getTrainingsByTraineeUsernameAndTrainerUsername("trainee.username", "trainer.username");
+        List<TrainingDTO> result = trainingService
+                .getTrainingsByTraineeAndCriteria(1L, null, null, null, "trainer.username");
 
         Assertions.assertNotNull(result);
         Assertions.assertFalse(result.isEmpty());
@@ -164,12 +132,13 @@ public class TrainingServiceTest {
     }
 
     @Test
-    public void testGetTrainingsByTrainerUsernameAndToDate() {
+    public void testGetTrainingsByTrainerAndToDate() {
         Training training = TrainingDTO.toEntity(trainingDTO);
-        when(trainingRepository.findTrainingsByTrainerUsernameAndToDate(anyString(), any(Date.class)))
+        when(trainingRepository.findTrainingsByTrainerAndCriteria(eq(2L), any(Date.class), isNull(), isNull(), isNull()))
                 .thenReturn(List.of(training));
 
-        List<TrainingDTO> result = trainingService.getTrainingsByTrainerUsernameAndToDate("trainer.username", new Date());
+        List<TrainingDTO> result = trainingService
+                .getTrainingsByTrainerAndCriteria(2L, new Date(), null, null, null);
 
         Assertions.assertNotNull(result);
         Assertions.assertFalse(result.isEmpty());
@@ -178,12 +147,13 @@ public class TrainingServiceTest {
     }
 
     @Test
-    public void testGetTrainingsByTrainerUsernameAndFromDate() {
+    public void testGetTrainingsByTrainerAndFromDate() {
         Training training = TrainingDTO.toEntity(trainingDTO);
-        when(trainingRepository.findTrainingsByTrainerUsernameAndFromDate(anyString(), any(Date.class)))
+        when(trainingRepository.findTrainingsByTrainerAndCriteria(eq(2L), isNull(), any(Date.class), isNull(), isNull()))
                 .thenReturn(List.of(training));
 
-        List<TrainingDTO> result = trainingService.getTrainingsByTrainerUsernameAndFromDate("trainer.username", new Date());
+        List<TrainingDTO> result = trainingService
+                .getTrainingsByTrainerAndCriteria(2L, null, new Date(), null, null);
 
         Assertions.assertNotNull(result);
         Assertions.assertFalse(result.isEmpty());
@@ -192,13 +162,14 @@ public class TrainingServiceTest {
     }
 
     @Test
-    public void testGetTrainingsByTrainerUsernameAndTrainingType() {
+    public void testGetTrainingsByTrainerAndTrainingType() {
         Training training = TrainingDTO.toEntity(trainingDTO);
         TrainingType trainingType = TrainingTypeDTO.toEntity(trainingTypeDTO);
-        when(trainingRepository.findTrainingsByTrainerUsernameAndTrainingType(anyString(), any(TrainingType.class)))
+        when(trainingRepository.findTrainingsByTrainerAndCriteria(eq(2L), isNull(), isNull(), eq(trainingType), isNull()))
                 .thenReturn(List.of(training));
 
-        List<TrainingDTO> result = trainingService.getTrainingsByTrainerUsernameAndTrainingType("trainer.username", trainingType);
+        List<TrainingDTO> result = trainingService
+                .getTrainingsByTrainerAndCriteria(2L, null, null, trainingType, null);
 
         Assertions.assertNotNull(result);
         Assertions.assertFalse(result.isEmpty());
@@ -207,16 +178,71 @@ public class TrainingServiceTest {
     }
 
     @Test
-    public void testGetTrainingsByTrainerUsernameAndTraineeUsername() {
+    public void testGetTrainingsByTrainerAndTraineeUsername() {
         Training training = TrainingDTO.toEntity(trainingDTO);
-        when(trainingRepository.findTrainingsByTrainerUsernameAndTraineeUsername(anyString(), anyString()))
+        when(trainingRepository.findTrainingsByTrainerAndCriteria(eq(2L), isNull(), isNull(), isNull(), eq("trainee.username")))
                 .thenReturn(List.of(training));
 
-        List<TrainingDTO> result = trainingService.getTrainingsByTrainerUsernameAndTraineeUsername("trainer.username", "trainee.username");
+        List<TrainingDTO> result = trainingService
+                .getTrainingsByTrainerAndCriteria(2L, null, null, null, "trainee.username");
 
         Assertions.assertNotNull(result);
         Assertions.assertFalse(result.isEmpty());
         Assertions.assertEquals(1, result.size());
         Assertions.assertEquals("trainee.username", result.get(0).getTrainee().getUserDTO().getUsername());
+    }
+
+    private UserDTO createTraineeUserDTO() {
+        return UserDTO.builder()
+                .id(1L)
+                .firstName("TraineeFirst")
+                .lastName("TraineeLast")
+                .username("trainee.username")
+                .build();
+    }
+
+    private TraineeDTO createTraineeDTO() {
+        return TraineeDTO.builder()
+                .id(1L)
+                .userDTO(createTraineeUserDTO())
+                .dateOfBirth(new Date())
+                .address("123 Trainee Street")
+                .build();
+    }
+
+    private UserDTO createTrainerUserDTO() {
+        return UserDTO.builder()
+                .id(2L)
+                .firstName("TrainerFirst")
+                .lastName("TrainerLast")
+                .username("trainer.username")
+                .build();
+    }
+
+    private TrainingTypeDTO createTrainingTypeDTO() {
+        return TrainingTypeDTO.builder()
+                .id(1L)
+                .trainingTypeName("Yoga")
+                .build();
+    }
+
+    private TrainerDTO createTrainerDTO() {
+        return TrainerDTO.builder()
+                .id(1L)
+                .userDTO(createTrainerUserDTO())
+                .trainingTypeDTO(trainingTypeDTO)
+                .build();
+    }
+
+    private TrainingDTO createTrainingDTO() {
+        return TrainingDTO.builder()
+                .id(1L)
+                .trainee(traineeDTO)
+                .trainer(trainerDTO)
+                .trainingName("Morning Yoga")
+                .trainingTypeDTO(trainingTypeDTO)
+                .trainingDate(new Date())
+                .trainingDuration(60)
+                .build();
     }
 }

@@ -6,7 +6,8 @@ import org.example.finalprojectepamlabapplication.DTO.modelDTO.TrainerDTO;
 import org.example.finalprojectepamlabapplication.DTO.modelDTO.UserDTO;
 import org.example.finalprojectepamlabapplication.repository.UserRepository;
 import org.example.finalprojectepamlabapplication.model.User;
-import org.example.finalprojectepamlabapplication.service.IUserService;
+import org.example.finalprojectepamlabapplication.service.UserService;
+import org.example.finalprojectepamlabapplication.utility.PasswordGenerator;
 import org.example.finalprojectepamlabapplication.utility.UsernameGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,19 +18,18 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-public class UserService implements IUserService {
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UsernameGenerator usernameGenerator;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
         this.usernameGenerator = new UsernameGenerator();
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<User> getAllUsers() {
         List<User> users = userRepository.findAll();
         log.info("Searching all users. Total users: {}", users.size());
@@ -37,7 +37,6 @@ public class UserService implements IUserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public UserDTO getUserById(Long id) {
         User user = userRepository.findById(id).orElseThrow();
 
@@ -45,7 +44,6 @@ public class UserService implements IUserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public UserDTO getUserByUsername(String username) {
         User user = userRepository.getUserByUsername(username).orElseThrow();
 
@@ -78,6 +76,13 @@ public class UserService implements IUserService {
         user.setActive(!user.isActive());
         userRepository.save(user);
         return UserDTO.toDTO(user);
+    }
+
+    @Override
+    public User setUsernameAndPasswordForUser(User user){
+        user.setUsername(usernameGenerator.generateUsername(user, userRepository.findAll()));
+        user.setPassword(PasswordGenerator.generatePassword());
+        return user;
     }
 
     private UserDTO getUserDTO(User user){
