@@ -73,11 +73,11 @@ public class TrainingServiceImplTest {
     @Test
     public void testGetTrainingsByTraineeAndToDate() {
         Training training = TrainingDTO.toEntity(trainingDTO);
-        when(trainingRepository.findTrainingsByTraineeAndCriteria(eq(1L), any(Date.class), isNull(), isNull(), isNull()))
+        when(trainingRepository.findTrainingsByTraineeAndCriterion(eq(1L), any(Date.class), isNull(), isNull(), isNull()))
                 .thenReturn(List.of(training));
 
         List<TrainingDTO> result = trainingService
-                .getTrainingsByTraineeAndCriteria(1L, new Date(), null, null, null);
+                .getTrainingsByTraineeAndCriterion(1L, new Date(), null, null, null);
 
         Assertions.assertNotNull(result);
         Assertions.assertFalse(result.isEmpty());
@@ -88,11 +88,11 @@ public class TrainingServiceImplTest {
     @Test
     public void testGetTrainingsByTraineeAndFromDate() {
         Training training = TrainingDTO.toEntity(trainingDTO);
-        when(trainingRepository.findTrainingsByTraineeAndCriteria(eq(1L), isNull(), any(Date.class), isNull(), isNull()))
+        when(trainingRepository.findTrainingsByTraineeAndCriterion(eq(1L), isNull(), any(Date.class), isNull(), isNull()))
                 .thenReturn(List.of(training));
 
         List<TrainingDTO> result = trainingService
-                .getTrainingsByTraineeAndCriteria(1L, null, new Date(), null, null);
+                .getTrainingsByTraineeAndCriterion(1L, null, new Date(), null, null);
 
         Assertions.assertNotNull(result);
         Assertions.assertFalse(result.isEmpty());
@@ -104,11 +104,11 @@ public class TrainingServiceImplTest {
     public void testGetTrainingsByTraineeAndTrainingType() {
         Training training = TrainingDTO.toEntity(trainingDTO);
         TrainingType trainingType = TrainingTypeDTO.toEntity(trainingTypeDTO);
-        when(trainingRepository.findTrainingsByTraineeAndCriteria(eq(1L), isNull(), isNull(), eq(trainingType), isNull()))
+        when(trainingRepository.findTrainingsByTraineeAndCriterion(eq(1L), isNull(), isNull(), eq(trainingType), isNull()))
                 .thenReturn(List.of(training));
 
         List<TrainingDTO> result = trainingService
-                .getTrainingsByTraineeAndCriteria(1L, null, null, trainingType, null);
+                .getTrainingsByTraineeAndCriterion(1L, null, null, trainingType, null);
 
         Assertions.assertNotNull(result);
         Assertions.assertFalse(result.isEmpty());
@@ -119,11 +119,11 @@ public class TrainingServiceImplTest {
     @Test
     public void testGetTrainingsByTraineeAndTrainerUsername() {
         Training training = TrainingDTO.toEntity(trainingDTO);
-        when(trainingRepository.findTrainingsByTraineeAndCriteria(eq(1L), isNull(), isNull(), isNull(), eq("trainer.username")))
+        when(trainingRepository.findTrainingsByTraineeAndCriterion(eq(1L), isNull(), isNull(), isNull(), eq("trainer.username")))
                 .thenReturn(List.of(training));
 
         List<TrainingDTO> result = trainingService
-                .getTrainingsByTraineeAndCriteria(1L, null, null, null, "trainer.username");
+                .getTrainingsByTraineeAndCriterion(1L, null, null, null, "trainer.username");
 
         Assertions.assertNotNull(result);
         Assertions.assertFalse(result.isEmpty());
@@ -134,11 +134,11 @@ public class TrainingServiceImplTest {
     @Test
     public void testGetTrainingsByTrainerAndToDate() {
         Training training = TrainingDTO.toEntity(trainingDTO);
-        when(trainingRepository.findTrainingsByTrainerAndCriteria(eq(2L), any(Date.class), isNull(), isNull(), isNull()))
+        when(trainingRepository.findTrainingsByTrainerAndCriterion(eq(2L), any(Date.class), isNull(), isNull(), isNull()))
                 .thenReturn(List.of(training));
 
         List<TrainingDTO> result = trainingService
-                .getTrainingsByTrainerAndCriteria(2L, new Date(), null, null, null);
+                .getTrainingsByTrainerAndCriterion(2L, new Date(), null, null, null);
 
         Assertions.assertNotNull(result);
         Assertions.assertFalse(result.isEmpty());
@@ -149,11 +149,11 @@ public class TrainingServiceImplTest {
     @Test
     public void testGetTrainingsByTrainerAndFromDate() {
         Training training = TrainingDTO.toEntity(trainingDTO);
-        when(trainingRepository.findTrainingsByTrainerAndCriteria(eq(2L), isNull(), any(Date.class), isNull(), isNull()))
+        when(trainingRepository.findTrainingsByTrainerAndCriterion(eq(2L), isNull(), any(Date.class), isNull(), isNull()))
                 .thenReturn(List.of(training));
 
         List<TrainingDTO> result = trainingService
-                .getTrainingsByTrainerAndCriteria(2L, null, new Date(), null, null);
+                .getTrainingsByTrainerAndCriterion(2L, null, new Date(), null, null);
 
         Assertions.assertNotNull(result);
         Assertions.assertFalse(result.isEmpty());
@@ -165,11 +165,11 @@ public class TrainingServiceImplTest {
     public void testGetTrainingsByTrainerAndTrainingType() {
         Training training = TrainingDTO.toEntity(trainingDTO);
         TrainingType trainingType = TrainingTypeDTO.toEntity(trainingTypeDTO);
-        when(trainingRepository.findTrainingsByTrainerAndCriteria(eq(2L), isNull(), isNull(), eq(trainingType), isNull()))
+        when(trainingRepository.findTrainingsByTrainerAndCriterion(eq(2L), isNull(), isNull(), eq(trainingType), isNull()))
                 .thenReturn(List.of(training));
 
         List<TrainingDTO> result = trainingService
-                .getTrainingsByTrainerAndCriteria(2L, null, null, trainingType, null);
+                .getTrainingsByTrainerAndCriterion(2L, null, null, trainingType, null);
 
         Assertions.assertNotNull(result);
         Assertions.assertFalse(result.isEmpty());
@@ -180,11 +180,11 @@ public class TrainingServiceImplTest {
     @Test
     public void testGetTrainingsByTrainerAndTraineeUsername() {
         Training training = TrainingDTO.toEntity(trainingDTO);
-        when(trainingRepository.findTrainingsByTrainerAndCriteria(eq(2L), isNull(), isNull(), isNull(), eq("trainee.username")))
+        when(trainingRepository.findTrainingsByTrainerAndCriterion(eq(2L), isNull(), isNull(), isNull(), eq("trainee.username")))
                 .thenReturn(List.of(training));
 
         List<TrainingDTO> result = trainingService
-                .getTrainingsByTrainerAndCriteria(2L, null, null, null, "trainee.username");
+                .getTrainingsByTrainerAndCriterion(2L, null, null, null, "trainee.username");
 
         Assertions.assertNotNull(result);
         Assertions.assertFalse(result.isEmpty());

@@ -89,9 +89,9 @@ public class TrainerServiceImplTest {
 
     @Test
     public void testGetTrainersNotAssignedToTrainee() {
-        when(trainerRepository.findTrainersWhichNotAssignToTraineeByUsername(anyString())).thenReturn(List.of(trainer));
+        when(trainerRepository.findTrainersWhichNotAssignToTraineeByUserId(anyLong())).thenReturn(List.of(trainer));
 
-        List<TrainerDTO> result = trainerService.getTrainersNotAssignedToTrainee("trainee.username");
+        List<TrainerDTO> result = trainerService.getTrainersNotAssignedToTrainee(1L);
 
         Assertions.assertNotNull(result);
         Assertions.assertFalse(result.isEmpty());

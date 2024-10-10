@@ -37,8 +37,8 @@ public class TraineeServiceImplTest {
 
     private Trainee trainee;
     private TraineeDTO traineeDTO;
-    TrainingTypeDTO trainingTypeDTO;
-    List<TrainerDTO> trainers;
+    private TrainingTypeDTO trainingTypeDTO;
+    private List<TrainerDTO> trainers;
 
     @BeforeEach
     public void setUp() {

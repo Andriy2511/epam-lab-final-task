@@ -14,5 +14,7 @@ public interface TrainerService {
 
     TrainerDTO getTrainerById(Long id);
 
-    List<TrainerDTO> getTrainersNotAssignedToTrainee(String traineeUsername);
+    List<TrainerDTO> getTrainersNotAssignedToTrainee(Long id);
+
+    TrainerDTO getTrainerByUserId(Long userId);
 }

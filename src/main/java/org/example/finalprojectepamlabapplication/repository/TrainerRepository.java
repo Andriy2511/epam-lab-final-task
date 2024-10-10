@@ -1,6 +1,5 @@
 package org.example.finalprojectepamlabapplication.repository;
 
-import org.example.finalprojectepamlabapplication.model.Trainee;
 import org.example.finalprojectepamlabapplication.model.Trainer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,7 +13,7 @@ import java.util.Optional;
 public interface TrainerRepository extends JpaRepository<Trainer, Long> {
     Optional<Trainer> deleteTrainerById(Long id);
 
-    @Query("SELECT tr FROM Trainer tr LEFT JOIN tr.trainees tn WHERE tn IS NULL OR tn.user.username != :username")
-    List<Trainer> findTrainersWhichNotAssignToTraineeByUsername(@Param("username") String username);
+    @Query("SELECT tr FROM Trainer tr LEFT JOIN tr.trainees tn WHERE tn IS NULL OR tn.user.id != :id")
+    List<Trainer> findTrainersWhichNotAssignToTraineeByUserId(@Param("id") Long id);
 
 }

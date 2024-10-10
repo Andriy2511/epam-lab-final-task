@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Repository
 public interface TrainingRepository extends JpaRepository<Training, Long> {
-    Optional<Training> findTrainingByTrainingName(String trainingName); // цей метод ігноруй
+    Optional<Training> findTrainingByTrainingName(String trainingName);
 
     @Query("""
             SELECT t FROM Training t WHERE t.trainee.user.id = :id AND
@@ -21,7 +21,7 @@ public interface TrainingRepository extends JpaRepository<Training, Long> {
             (:fromDate IS NULL OR t.trainingDate >= :fromDate) AND
             (:trainingType IS NULL OR t.trainingType = :trainingType) AND
             (:traineeUsername IS NULL OR t.trainer.user.username = :trainerUsername)""")
-    List<Training> findTrainingsByTraineeAndCriteria(
+    List<Training> findTrainingsByTraineeAndCriterion(
             @Param("id") Long id,
             @Param("toDate") Date toDate,
             @Param("fromDate") Date fromDate,
@@ -35,7 +35,7 @@ public interface TrainingRepository extends JpaRepository<Training, Long> {
             (:fromDate IS NULL OR t.trainingDate >= :fromDate) AND
             (:trainingType IS NULL OR t.trainingType = :trainingType) AND
             (:traineeUsername IS NULL OR t.trainee.user.username = :traineeUsername)""")
-    List<Training> findTrainingsByTrainerAndCriteria(
+    List<Training> findTrainingsByTrainerAndCriterion(
             @Param("id") Long id,
             @Param("toDate") Date toDate,
             @Param("fromDate") Date fromDate,

@@ -61,8 +61,14 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    public List<TrainerDTO> getTrainersNotAssignedToTrainee(String traineeUsername) {
-        List<Trainer> trainers = trainerRepository.findTrainersWhichNotAssignToTraineeByUsername(traineeUsername);
+    public List<TrainerDTO> getTrainersNotAssignedToTrainee(Long id) {
+        List<Trainer> trainers = trainerRepository.findTrainersWhichNotAssignToTraineeByUserId(id);
         return trainers.stream().map(TrainerDTO::toDTO).toList();
+    }
+
+    @Override
+    public TrainerDTO getTrainerByUserId(Long userId){
+        UserDTO userDTO = userService.getUserById(userId);
+        return userDTO.getTrainerDTO();
     }
 }

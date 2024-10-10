@@ -50,16 +50,16 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
     @Override
-    public List<TrainingDTO> getTrainingsByTraineeAndCriteria(Long userId, Date toDate, Date fromDate,
-                                                              TrainingType trainingType, String trainerUsername){
-        List<Training> trainings = trainingRepository.findTrainingsByTraineeAndCriteria(userId, toDate, fromDate, trainingType, trainerUsername);
+    public List<TrainingDTO> getTrainingsByTraineeAndCriterion(Long userId, Date toDate, Date fromDate,
+                                                               TrainingType trainingType, String trainerUsername){
+        List<Training> trainings = trainingRepository.findTrainingsByTraineeAndCriterion(userId, toDate, fromDate, trainingType, trainerUsername);
         return trainings.stream().map(TrainingDTO::toDTO).toList();
     }
 
     @Override
-    public List<TrainingDTO> getTrainingsByTrainerAndCriteria(Long userId, Date toDate, Date fromDate,
-                                                              TrainingType trainingType, String traineeUsername){
-        List<Training> trainings = trainingRepository.findTrainingsByTrainerAndCriteria(userId, toDate, fromDate, trainingType, traineeUsername);
+    public List<TrainingDTO> getTrainingsByTrainerAndCriterion(Long userId, Date toDate, Date fromDate,
+                                                               TrainingType trainingType, String traineeUsername){
+        List<Training> trainings = trainingRepository.findTrainingsByTrainerAndCriterion(userId, toDate, fromDate, trainingType, traineeUsername);
         return trainings.stream().map(TrainingDTO::toDTO).toList();
     }
 }

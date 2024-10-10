@@ -69,4 +69,10 @@ public class TraineeServiceImpl implements TraineeService {
         trainee.setTrainers(newTrainers);
         return TraineeDTO.toDTO(traineeRepository.save(trainee));
     }
+
+    @Override
+    public TraineeDTO getTraineeByUserId(Long userId) {
+        UserDTO userDTO = userService.getUserById(userId);
+        return userDTO.getTraineeDTO();
+    }
 }

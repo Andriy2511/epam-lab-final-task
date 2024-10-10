@@ -16,4 +16,6 @@ public interface TraineeService {
     TraineeDTO getTraineeById(Long id);
 
     TraineeDTO updateTrainersListByTraineeId(List<TrainerDTO> trainerDTOList, Long traineeId);
+
+    TraineeDTO getTraineeByUserId(Long userId);
 }
