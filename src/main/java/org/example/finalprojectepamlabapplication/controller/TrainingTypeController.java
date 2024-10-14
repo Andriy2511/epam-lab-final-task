@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.example.finalprojectepamlabapplication.DTO.modelDTO.TrainingTypeDTO;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
@@ -15,6 +14,5 @@ public interface TrainingTypeController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Training types found successfully")
     })
-    @GetMapping
     List<TrainingTypeDTO> getAllTrainingTypes();
 }

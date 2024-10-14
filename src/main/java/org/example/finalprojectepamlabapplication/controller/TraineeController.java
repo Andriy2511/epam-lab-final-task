@@ -7,7 +7,9 @@ import org.example.finalprojectepamlabapplication.DTO.endpointDTO.TrainerInfoDTO
 import org.example.finalprojectepamlabapplication.DTO.modelDTO.TraineeDTO;
 import org.example.finalprojectepamlabapplication.DTO.modelDTO.TrainerDTO;
 import org.example.finalprojectepamlabapplication.DTO.modelDTO.TrainingDTO;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Date;
 import java.util.List;
@@ -20,7 +22,6 @@ public interface TraineeController {
             @ApiResponse(responseCode = "200", description = "Trainee found successfully"),
             @ApiResponse(responseCode = "400", description = "User not found")
     })
-    @GetMapping("/{id}")
     TraineeDTO getTraineeById(@PathVariable Long id);
 
     @Operation(summary = "Updates trainee profile",
@@ -29,7 +30,6 @@ public interface TraineeController {
             @ApiResponse(responseCode = "200", description = "Trainee updated successfully"),
             @ApiResponse(responseCode = "400", description = "User not found")
     })
-    @PutMapping("/{id}")
     TraineeDTO updateTrainee(@PathVariable Long id, TraineeDTO traineeDTO);
 
     @Operation(summary = "Deletes trainee by ID",
@@ -38,7 +38,6 @@ public interface TraineeController {
             @ApiResponse(responseCode = "200", description = "Trainee deleted successfully"),
             @ApiResponse(responseCode = "400", description = "User not found")
     })
-    @DeleteMapping("/{id}")
     void deleteTrainee(@PathVariable Long id);
 
     @Operation(summary = "Receives not assigned trainers",
@@ -47,7 +46,6 @@ public interface TraineeController {
             @ApiResponse(responseCode = "200", description = "Trainers found successfully"),
             @ApiResponse(responseCode = "400", description = "User not found")
     })
-    @GetMapping("/{id}/not-assigned-trainers")
     List<TrainerDTO> getTrainersNotAssignedToTrainee(@PathVariable Long id);
 
     @Operation(summary = "Updates user's trainers",
@@ -56,7 +54,6 @@ public interface TraineeController {
             @ApiResponse(responseCode = "200", description = "List of trainers updated successfully"),
             @ApiResponse(responseCode = "400", description = "User not found")
     })
-    @PutMapping("/{id}/trainers")
     List<TrainerInfoDTO> updateTraineeTrainersList(@PathVariable Long id, @ModelAttribute("trainersUsername") List<String> trainerUsernames);
 
     @Operation(summary = "Finds training with criterion",
@@ -65,7 +62,6 @@ public interface TraineeController {
             @ApiResponse(responseCode = "200", description = "Trainings found successfully"),
             @ApiResponse(responseCode = "400", description = "User not found")
     })
-    @GetMapping("/{id}/trainings")
     List<TrainingDTO> getTrainingByTraineeWithCriterion(@PathVariable Long id,
                                                                         @RequestParam(name = "to-date", required = false) Date toDate,
                                                                         @RequestParam(name = "from-date", required = false) Date fromDate,

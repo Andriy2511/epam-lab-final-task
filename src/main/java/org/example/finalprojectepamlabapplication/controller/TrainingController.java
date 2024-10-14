@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.example.finalprojectepamlabapplication.DTO.endpointDTO.AddTrainingRequestDTO;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 
 public interface TrainingController {
 
@@ -16,6 +15,5 @@ public interface TrainingController {
             @ApiResponse(responseCode = "200", description = "Training added successfully"),
             @ApiResponse(responseCode = "400", description = "Trainee, trainer or training type not found")
     })
-    @PostMapping("/{id}")
     void addTraining(@PathVariable Long id, @ModelAttribute("trainingDTO") AddTrainingRequestDTO addTrainingRequestDTO);
 }

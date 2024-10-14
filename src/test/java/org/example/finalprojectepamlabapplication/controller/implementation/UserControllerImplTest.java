@@ -1,8 +1,10 @@
 package org.example.finalprojectepamlabapplication.controller.implementation;
 
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
+import org.example.finalprojectepamlabapplication.DTO.endpointDTO.ChangeLoginRequestDTO;
 import org.example.finalprojectepamlabapplication.DTO.modelDTO.UserDTO;
 import org.example.finalprojectepamlabapplication.defaulttestdata.dto.DTOBuilder;
+import org.example.finalprojectepamlabapplication.exception.UnauthorizedException;
 import org.example.finalprojectepamlabapplication.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,20 +13,24 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.Mockito.when;
-import static io.restassured.module.mockmvc.RestAssuredMockMvc.*;
+import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class UserControllerImplTest {
 
     @InjectMocks
-    UserControllerImpl userController;
+    private UserControllerImpl userController;
 
     @Mock
-    UserService userService;
+    private UserService userService;
 
-    UserDTO userDTO;
+    private UserDTO userDTO;
 
     @BeforeEach
     public void setUp() {
@@ -51,6 +57,7 @@ public class UserControllerImplTest {
 
         userDTO.toBuilder().password(oldPassword);
         when(userService.getUserById(1L)).thenReturn(userDTO);
+        when(userService.isOldPasswordSimilarToCurrentPassword(anyLong(), anyString())).thenReturn(true);
 
         given()
                 .formParam("newPassword", newPassword)
@@ -62,20 +69,16 @@ public class UserControllerImplTest {
     }
 
     @Test
-    public void testChangePasswordUnauthorized(){
+    public void testChangePasswordUnauthorized() {
         String oldPassword = "0123456789";
         String newPassword = "1234567890";
 
         userDTO.toBuilder().password(oldPassword);
-        when(userService.getUserById(1L)).thenReturn(userDTO);
+        lenient().when(userService.getUserById(1L)).thenReturn(userDTO);
 
-        given()
-                .formParam("newPassword", newPassword)
-                .formParam("oldPassword", "qwertyuiop")
-                .when()
-                .put("/users/1")
-                .then()
-                .statusCode(401);
+        assertThrows(UnauthorizedException.class, () -> {
+            userController.changePassword(1L, new ChangeLoginRequestDTO("qwertyuiop", newPassword));
+        });
     }
 
     @Test

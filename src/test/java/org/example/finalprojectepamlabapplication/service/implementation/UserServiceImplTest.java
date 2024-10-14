@@ -97,6 +97,20 @@ public class UserServiceImplTest {
         Assertions.assertFalse(result.isActive());
     }
 
+    @Test
+    public void testIsOldPasswordSimilarToCurrentPasswordSuccess() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+
+        Assertions.assertTrue(userService.isOldPasswordSimilarToCurrentPassword(user.getId(), "password123"));
+    }
+
+    @Test
+    public void testIsOldPasswordSimilarToCurrentPasswordFailure() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+
+        Assertions.assertFalse(userService.isOldPasswordSimilarToCurrentPassword(user.getId(), "another password123"));
+    }
+
     private User createUser() {
         User user = new User();
         user.setId(1L);

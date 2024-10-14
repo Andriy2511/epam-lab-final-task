@@ -20,4 +20,6 @@ public interface UserService {
     UserDTO changeActiveStatus(Long id);
 
     User setUsernameAndPasswordForUser(User user);
+
+    boolean isOldPasswordSimilarToCurrentPassword(Long id, String previousPassword);
 }

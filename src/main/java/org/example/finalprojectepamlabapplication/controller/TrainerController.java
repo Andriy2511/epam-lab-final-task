@@ -5,9 +5,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.example.finalprojectepamlabapplication.DTO.modelDTO.TrainerDTO;
 import org.example.finalprojectepamlabapplication.DTO.modelDTO.TrainingDTO;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Date;
@@ -21,7 +19,6 @@ public interface TrainerController {
             @ApiResponse(responseCode = "200", description = "Trainer found successfully"),
             @ApiResponse(responseCode = "400", description = "User not found")
     })
-    @GetMapping("/{id}")
     TrainerDTO getTrainer(@PathVariable Long id);
 
     @Operation(summary = "Updates trainer profile.",
@@ -30,7 +27,6 @@ public interface TrainerController {
             @ApiResponse(responseCode = "200", description = "Trainer updated successfully"),
             @ApiResponse(responseCode = "400", description = "User not found")
     })
-    @PutMapping("/{id}")
     TrainerDTO updateTrainer(@PathVariable Long id, TrainerDTO trainerDTO);
 
     @Operation(summary = "Finds training with criterion",
@@ -39,7 +35,6 @@ public interface TrainerController {
             @ApiResponse(responseCode = "200", description = "Trainings found successfully"),
             @ApiResponse(responseCode = "400", description = "User not found")
     })
-    @GetMapping("/{id}/trainings")
     List<TrainingDTO> getTrainingByTrainerWithCriterion(@PathVariable Long id,
                                                                         @RequestParam(name = "to-date", required = false) Date toDate,
                                                                         @RequestParam(name = "from-date", required = false) Date fromDate,

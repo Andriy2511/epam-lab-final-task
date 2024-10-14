@@ -5,8 +5,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.example.finalprojectepamlabapplication.DTO.endpointDTO.ChangeLoginRequestDTO;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 
 public interface UserController {
 
@@ -16,7 +16,6 @@ public interface UserController {
             @ApiResponse(responseCode = "200", description = "The password changed successfully"),
             @ApiResponse(responseCode = "400", description = "User not found")
     })
-    @GetMapping("/{id}")
     String getUserLogin(@PathVariable Long id);
 
     @Operation(summary = "Changes user password",
@@ -26,8 +25,7 @@ public interface UserController {
             @ApiResponse(responseCode = "400", description = "User not found"),
             @ApiResponse(responseCode = "401", description = "An old password isn't the same as a new password")
     })
-    @PutMapping("/{id}")
-    ResponseEntity<Void> changePassword(@PathVariable Long id, @ModelAttribute @Valid ChangeLoginRequestDTO changeLoginRequestDTO);
+    void changePassword(@PathVariable Long id, @ModelAttribute @Valid ChangeLoginRequestDTO changeLoginRequestDTO);
 
 
     @Operation(summary = "Changes user status",
@@ -36,6 +34,5 @@ public interface UserController {
             @ApiResponse(responseCode = "200", description = "Status changed successfully"),
             @ApiResponse(responseCode = "400", description = "User not found")
     })
-    @PatchMapping("/{id}")
     void changeStatus(@PathVariable Long id);
 }

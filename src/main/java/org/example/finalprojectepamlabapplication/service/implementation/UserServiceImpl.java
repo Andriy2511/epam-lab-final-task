@@ -11,7 +11,6 @@ import org.example.finalprojectepamlabapplication.utility.PasswordGenerator;
 import org.example.finalprojectepamlabapplication.utility.UsernameGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -83,6 +82,12 @@ public class UserServiceImpl implements UserService {
         user.setUsername(usernameGenerator.generateUsername(user, userRepository.findAll()));
         user.setPassword(PasswordGenerator.generatePassword());
         return user;
+    }
+
+    @Override
+    public boolean isOldPasswordSimilarToCurrentPassword(Long id, String currentPassword){
+        UserDTO userDTO = getUserById(id);
+        return userDTO.getPassword().equals(currentPassword);
     }
 
     private UserDTO getUserDTO(User user){
