@@ -1,5 +1,6 @@
 package org.example.finalprojectepamlabapplication.service.implementation;
 
+import org.example.finalprojectepamlabapplication.DTO.modelDTO.TraineeDTO;
 import org.example.finalprojectepamlabapplication.DTO.modelDTO.TrainerDTO;
 import org.example.finalprojectepamlabapplication.DTO.modelDTO.TrainingTypeDTO;
 import org.example.finalprojectepamlabapplication.DTO.modelDTO.UserDTO;
@@ -96,6 +97,20 @@ public class TrainerServiceImplTest {
         Assertions.assertNotNull(result);
         Assertions.assertFalse(result.isEmpty());
         Assertions.assertEquals(trainerDTO.getId(), result.get(0).getId());
+    }
+
+    @Test
+    public void testGetTraineeByUserId(){
+        UserDTO userDTO = mock(UserDTO.class);
+        TrainerDTO trainerDTO = mock(TrainerDTO.class);
+
+        when(userService.getUserById(anyLong())).thenReturn(userDTO);
+        when(userDTO.getTrainerDTO()).thenReturn(trainerDTO);
+
+        TrainerDTO result = trainerService.getTrainerByUserId(1L);
+
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(trainerDTO, result);
     }
 
     private UserDTO createUserDTO() {

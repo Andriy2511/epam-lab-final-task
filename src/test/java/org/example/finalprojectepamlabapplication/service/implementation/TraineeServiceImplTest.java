@@ -35,6 +35,7 @@ public class TraineeServiceImplTest {
     @InjectMocks
     private TraineeServiceImpl traineeService;
 
+    private User user;
     private Trainee trainee;
     private TraineeDTO traineeDTO;
     private TrainingTypeDTO trainingTypeDTO;
@@ -44,7 +45,8 @@ public class TraineeServiceImplTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        trainee = createTrainee();
+        user = createUser();
+        trainee = createTrainee(user);
         traineeDTO = createTraineeDTO();
         trainingTypeDTO = createTrainingTypeDTO();
         trainers = createTrainerDTOList();
@@ -111,12 +113,26 @@ public class TraineeServiceImplTest {
         Assertions.assertNotNull(result);
     }
 
-    private Trainee createTrainee() {
+    @Test
+    public void testGetTraineeByUserId(){
+        UserDTO userDTO = mock(UserDTO.class);
+        TraineeDTO traineeDTO = mock(TraineeDTO.class);
+
+        when(userService.getUserById(anyLong())).thenReturn(userDTO);
+        when(userDTO.getTraineeDTO()).thenReturn(traineeDTO);
+
+        TraineeDTO result = traineeService.getTraineeByUserId(1L);
+
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(traineeDTO, result);
+    }
+
+    private Trainee createTrainee(User user) {
         Trainee trainee = new Trainee();
         trainee.setId(1L);
         trainee.setDateOfBirth(new Date());
         trainee.setAddress("Address");
-        trainee.setUser(createUser());
+        trainee.setUser(user);
         return trainee;
     }
 
