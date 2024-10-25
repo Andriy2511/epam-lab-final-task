@@ -21,8 +21,8 @@ public class TrainerInfoDTO {
         TrainerInfoDTO trainerInfoDTO = new TrainerInfoDTO();
         trainerInfoDTO.setId(trainerDTO.getId());
         trainerInfoDTO.setUsername(trainerDTO.getUserDTO().getUsername());
-        trainerInfoDTO.setUsername(trainerDTO.getUserDTO().getFirstName());
-        trainerInfoDTO.setUsername(trainerDTO.getUserDTO().getLastName());
+        trainerInfoDTO.setFirstName(trainerDTO.getUserDTO().getFirstName());
+        trainerInfoDTO.setLastName(trainerDTO.getUserDTO().getLastName());
         trainerInfoDTO.setSpecialization(trainerDTO.getTrainingTypeDTO());
         return trainerInfoDTO;
     }

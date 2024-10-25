@@ -6,6 +6,11 @@ springdoc:
   swagger-ui:
     path: /swagger-ui-custom.html
 
+jwt:
+  secret: qu8)io1n7%^(*(hhl#k5^&l_kf90!i3o
+  lifetime: 60m
+
+
 ---
 spring:
   config:

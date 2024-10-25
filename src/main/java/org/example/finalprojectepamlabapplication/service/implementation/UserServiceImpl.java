@@ -6,10 +6,15 @@ import org.example.finalprojectepamlabapplication.DTO.modelDTO.TrainerDTO;
 import org.example.finalprojectepamlabapplication.DTO.modelDTO.UserDTO;
 import org.example.finalprojectepamlabapplication.repository.UserRepository;
 import org.example.finalprojectepamlabapplication.model.User;
+import org.example.finalprojectepamlabapplication.security.GumUserDetails;
 import org.example.finalprojectepamlabapplication.service.UserService;
 import org.example.finalprojectepamlabapplication.utility.PasswordGenerator;
 import org.example.finalprojectepamlabapplication.utility.UsernameGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,14 +22,16 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
     private final UsernameGenerator usernameGenerator;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
         this.usernameGenerator = new UsernameGenerator();
     }
 
@@ -64,7 +71,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO updateUserPassword(UserDTO userDTO, String password) {
         User user = userRepository.findById(userDTO.getId()).orElseThrow();
-        user.setPassword(password);
+        user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
         return UserDTO.toDTO(user);
     }
@@ -80,24 +87,31 @@ public class UserServiceImpl implements UserService {
     @Override
     public User setUsernameAndPasswordForUser(User user){
         user.setUsername(usernameGenerator.generateUsername(user, userRepository.findAll()));
-        user.setPassword(PasswordGenerator.generatePassword());
+        String password = PasswordGenerator.generatePassword();
+        user.setPassword(passwordEncoder.encode(password));
         return user;
     }
 
     @Override
     public boolean isOldPasswordSimilarToCurrentPassword(Long id, String currentPassword){
         UserDTO userDTO = getUserById(id);
-        return userDTO.getPassword().equals(currentPassword);
+        return passwordEncoder.matches(currentPassword, userDTO.getPassword());
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.getUserByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
+        return new GumUserDetails(user);
     }
 
     private UserDTO getUserDTO(User user){
         UserDTO userDTO = UserDTO.toDTO(user);
 
         Optional.ofNullable(user.getTrainee())
-                .ifPresent(trainee -> userDTO.toBuilder().traineeDTO(TraineeDTO.toDTO(trainee)));
+                .ifPresent(trainee -> userDTO.toBuilder().traineeDTO(TraineeDTO.toDTO(trainee)).build());
 
         Optional.ofNullable(user.getTrainer())
-                .ifPresent(trainer -> userDTO.toBuilder().trainerDTO(TrainerDTO.toDTO(trainer)));
+                .ifPresent(trainer -> userDTO.toBuilder().trainerDTO(TrainerDTO.toDTO(trainer)).build());
 
         return userDTO;
     }
