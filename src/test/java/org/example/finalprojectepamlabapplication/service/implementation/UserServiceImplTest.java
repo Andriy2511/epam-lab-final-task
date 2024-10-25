@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import java.util.List;
 import java.util.Optional;
 import static org.mockito.ArgumentMatchers.*;
@@ -16,6 +18,9 @@ public class UserServiceImplTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -79,6 +84,7 @@ public class UserServiceImplTest {
     public void testUpdateUserPassword() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenReturn(user);
+        when(passwordEncoder.encode(anyString())).thenReturn("newPassword");
 
         UserDTO result = userService.updateUserPassword(userDTO, "newPassword");
 
@@ -99,16 +105,20 @@ public class UserServiceImplTest {
 
     @Test
     public void testIsOldPasswordSimilarToCurrentPasswordSuccess() {
+        String currentPassword = "password123";
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(user.getPassword(), currentPassword)).thenReturn(user.getPassword().equals(currentPassword));
 
-        Assertions.assertTrue(userService.isOldPasswordSimilarToCurrentPassword(user.getId(), "password123"));
+        Assertions.assertTrue(userService.isOldPasswordSimilarToCurrentPassword(user.getId(), currentPassword));
     }
 
     @Test
     public void testIsOldPasswordSimilarToCurrentPasswordFailure() {
+        String anotherPassword = "another password123";
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(user.getPassword(), anotherPassword)).thenReturn(user.getPassword().equals(anotherPassword));
 
-        Assertions.assertFalse(userService.isOldPasswordSimilarToCurrentPassword(user.getId(), "another password123"));
+        Assertions.assertFalse(userService.isOldPasswordSimilarToCurrentPassword(user.getId(), anotherPassword));
     }
 
     private User createUser() {

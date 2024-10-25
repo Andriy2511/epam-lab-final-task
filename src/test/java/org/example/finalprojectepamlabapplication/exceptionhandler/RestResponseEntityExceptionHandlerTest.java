@@ -1,6 +1,8 @@
 package org.example.finalprojectepamlabapplication.exceptionhandler;
 
 import org.example.finalprojectepamlabapplication.errorhandler.RestResponseEntityExceptionHandler;
+import org.example.finalprojectepamlabapplication.exception.UnauthorizedException;
+import org.example.finalprojectepamlabapplication.exception.UserAlreadyExistsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.MethodParameter;
@@ -60,5 +62,25 @@ public class RestResponseEntityExceptionHandlerTest {
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Data integrity violation", response.getBody());
+    }
+
+    @Test
+    public void testHandleUnauthorizedException() {
+        UnauthorizedException exception = new UnauthorizedException("Unauthorized access");
+
+        ResponseEntity<String> response = exceptionHandler.handleUnauthorizedException(exception);
+
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        assertEquals("Unauthorized access", response.getBody());
+    }
+
+    @Test
+    public void testHandleUserAlreadyExistException() {
+        UserAlreadyExistsException exception = new UserAlreadyExistsException("User already exists");
+
+        ResponseEntity<String> response = exceptionHandler.handleUserAlreadyExistException(exception);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("User already exists", response.getBody());
     }
 }

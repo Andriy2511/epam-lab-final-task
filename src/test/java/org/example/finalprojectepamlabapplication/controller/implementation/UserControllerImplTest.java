@@ -24,11 +24,11 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class UserControllerImplTest {
 
-    @InjectMocks
-    private UserControllerImpl userController;
-
     @Mock
     private UserService userService;
+
+    @InjectMocks
+    private UserControllerImpl userController;
 
     private UserDTO userDTO;
 

@@ -1,5 +1,6 @@
 package org.example.finalprojectepamlabapplication.DTO.modelDTO;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,9 +16,11 @@ public class TrainerDTO {
 
     private Long id;
 
+    @Valid
     @NotNull(message = "The field cannot be void")
     private TrainingTypeDTO trainingTypeDTO;
 
+    @Valid
     @NotNull(message = "The field cannot be void")
     private UserDTO userDTO;
 
