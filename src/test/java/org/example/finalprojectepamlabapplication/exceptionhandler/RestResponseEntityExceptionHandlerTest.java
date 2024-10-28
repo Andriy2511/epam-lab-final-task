@@ -31,12 +31,13 @@ public class RestResponseEntityExceptionHandlerTest {
 
     @Test
     public void testHandleEntityNotFoundException() {
-        NoSuchElementException exception = new NoSuchElementException("Entity not found");
+        String errorMessage = "Entity not found";
+        NoSuchElementException exception = new NoSuchElementException(errorMessage);
 
-        ResponseEntity<String> response = exceptionHandler.handleEntityNotFoundException(exception);
+        String response = exceptionHandler.handleEntityNotFoundException(exception);
+        String expectedResponse = expectedResult(errorMessage, HttpStatus.NOT_FOUND);
 
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals("Entity not found", response.getBody());
+        assertEquals(expectedResponse, response);
     }
 
     @Test
@@ -48,39 +49,57 @@ public class RestResponseEntityExceptionHandlerTest {
         when(bindingResult.getFieldErrors()).thenReturn(Collections.singletonList(fieldError));
 
         MethodArgumentNotValidException exception = new MethodArgumentNotValidException(methodParameter, bindingResult);
-        ResponseEntity<String> response = exceptionHandler.handleValidationException(exception);
+        String response = exceptionHandler.handleValidationException(exception);
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("field : Field error message", response.getBody() != null ? response.getBody().trim() : null);
+        StringBuilder expectedResponse = new StringBuilder();
+        expectedResponse.append("field : Field error message")
+                .append(System.lineSeparator())
+                .append("HttpStatus : ")
+                .append("400 BAD_REQUEST");
+
+        assertEquals(expectedResponse.toString(), response);
     }
 
     @Test
     public void testHandleDataIntegrityViolationException() {
-        DataIntegrityViolationException exception = new DataIntegrityViolationException("Data integrity violation");
+        String errorMessage = "Data integrity violation";
+        DataIntegrityViolationException exception = new DataIntegrityViolationException(errorMessage);
 
-        ResponseEntity<String> response = exceptionHandler.handleDataIntegrityViolationException(exception);
+        String response = exceptionHandler.handleDataIntegrityViolationException(exception);
+        String expectedResponse = expectedResult(errorMessage, HttpStatus.BAD_REQUEST);
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("Data integrity violation", response.getBody());
+        assertEquals(expectedResponse, response);
     }
 
     @Test
     public void testHandleUnauthorizedException() {
-        UnauthorizedException exception = new UnauthorizedException("Unauthorized access");
+        String errorMessage = "Unauthorized access";
+        UnauthorizedException exception = new UnauthorizedException(errorMessage);
 
-        ResponseEntity<String> response = exceptionHandler.handleUnauthorizedException(exception);
+        String response = exceptionHandler.handleUnauthorizedException(exception);
+        String expectedResponse = expectedResult(errorMessage, HttpStatus.UNAUTHORIZED);
 
-        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
-        assertEquals("Unauthorized access", response.getBody());
+        assertEquals(expectedResponse, response);
     }
 
     @Test
     public void testHandleUserAlreadyExistException() {
-        UserAlreadyExistsException exception = new UserAlreadyExistsException("User already exists");
+        String errorMessage = "User already exists";
+        UserAlreadyExistsException exception = new UserAlreadyExistsException(errorMessage);
 
-        ResponseEntity<String> response = exceptionHandler.handleUserAlreadyExistException(exception);
+        String response = exceptionHandler.handleUserAlreadyExistException(exception);
+        String expectedResponse = expectedResult(errorMessage, HttpStatus.BAD_REQUEST);
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("User already exists", response.getBody());
+        assertEquals(expectedResponse, response);
+    }
+
+    private String expectedResult(String message, HttpStatus status){
+        StringBuilder expectedResponse = new StringBuilder();
+        return expectedResponse
+                .append(message)
+                .append(System.lineSeparator())
+                .append("Http Status : ")
+                .append(status)
+                .toString();
     }
 }

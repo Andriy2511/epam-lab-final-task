@@ -7,7 +7,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.example.finalprojectepamlabapplication.exception.UnauthorizedException;
 import org.example.finalprojectepamlabapplication.service.BlackListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -42,13 +41,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             if(!blackListService.isBlacklisted(jwtToken)) {
                 try {
                     username = jwtTokenProvider.getUsernameFromToken(jwtToken);
-                } catch (ExpiredJwtException e) {
-                    log.debug("Expired JWT token");
-                    setResponseErrorMessage(response, "Expired or invalid JWT token");
-                    return;
-                } catch (SignatureException e) {
-                    log.debug("Invalid JWT token");
-                    setResponseErrorMessage(response, "The JWT token is invalid");
+                } catch (ExpiredJwtException | SignatureException e){
+                    handleJwtException(response, e);
                     return;
                 }
             } else {
@@ -58,6 +52,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             }
         }
 
+        setAuthenticationForUser(username, jwtToken);
+        filterChain.doFilter(request, response);
+    }
+
+    private void setResponseErrorMessage(HttpServletResponse response, String message) throws IOException {
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, message);
+    }
+
+    private void setAuthenticationForUser(String username, String jwtToken){
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(
@@ -70,10 +73,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     );
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
-        filterChain.doFilter(request, response);
     }
 
-    private void setResponseErrorMessage(HttpServletResponse response, String message) throws IOException {
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, message);
+    private void handleJwtException(HttpServletResponse response, Exception e) throws IOException {
+        String message = e instanceof ExpiredJwtException ? "Expired or invalid JWT token" : "The JWT token is invalid";
+        log.debug(message);
+        setResponseErrorMessage(response, message);
     }
 }

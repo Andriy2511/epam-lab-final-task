@@ -14,36 +14,55 @@ import java.util.NoSuchElementException;
 @ControllerAdvice
 public class RestResponseEntityExceptionHandler {
 
+    private StringBuilder errorDetailsBuilder;
+
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<String> handleEntityNotFoundException(NoSuchElementException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    public String handleEntityNotFoundException(NoSuchElementException e) {
+        errorDetailsBuilder = new StringBuilder();
+        return buildStringWithErrorDetailsAndStatus(errorDetailsBuilder, HttpStatus.NOT_FOUND, e);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleValidationException(MethodArgumentNotValidException e) {
-        StringBuilder errorDetails = new StringBuilder();
+    public String handleValidationException(MethodArgumentNotValidException e) {
+        errorDetailsBuilder = new StringBuilder();
 
         e.getBindingResult().getFieldErrors().forEach(error ->
-                errorDetails.append(error.getField())
+                errorDetailsBuilder.append(error.getField())
                 .append(" : ")
                 .append(error.getDefaultMessage())
                 .append(System.lineSeparator()));
 
-        return new ResponseEntity<>(errorDetails.toString(), HttpStatus.BAD_REQUEST);
+        errorDetailsBuilder
+                .append("HttpStatus : ")
+                .append(HttpStatus.BAD_REQUEST);
+        return errorDetailsBuilder.toString();
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    public String handleDataIntegrityViolationException(DataIntegrityViolationException e) {
+        errorDetailsBuilder = new StringBuilder();
+        return buildStringWithErrorDetailsAndStatus(errorDetailsBuilder, HttpStatus.BAD_REQUEST, e);
     }
 
     @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<String> handleUnauthorizedException(Exception e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+    public String handleUnauthorizedException(Exception e) {
+        errorDetailsBuilder = new StringBuilder();
+        return buildStringWithErrorDetailsAndStatus(errorDetailsBuilder, HttpStatus.UNAUTHORIZED, e);
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<String> handleUserAlreadyExistException(Exception e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    public String handleUserAlreadyExistException(Exception e) {
+        errorDetailsBuilder = new StringBuilder();
+        return buildStringWithErrorDetailsAndStatus(errorDetailsBuilder, HttpStatus.BAD_REQUEST, e);
+    }
+
+    private String buildStringWithErrorDetailsAndStatus(StringBuilder errorDetails, HttpStatus status, Exception e) {
+        errorDetails
+                .append(e.getMessage())
+                .append(System.lineSeparator())
+                .append("Http Status : ")
+                .append(status);
+
+        return errorDetails.toString();
     }
 }
